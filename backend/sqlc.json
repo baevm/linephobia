@@ -1,0 +1,28 @@
+{
+  "version": "2",
+  "sql": [
+    {
+      "engine": "postgresql",
+      "queries": "internal/db/queries.sql",
+      "schema": "internal/db/migrations",
+      "gen": {
+        "go": {
+          "package": "db",
+          "out": "internal/db",
+          "sql_package": "pgx/v5",
+          "emit_result_struct_pointers": true,
+          "overrides": [
+            {
+              "column": "repostats.stats",
+              "go_type": {
+                "import":"loc-web-app/backend/internal/models",
+                "package": "models",
+                "type":"LanguageSummary"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

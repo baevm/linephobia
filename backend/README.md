@@ -1,0 +1,20 @@
+# loc-web-app/backend
+
+
+
+1. create .env file at root with structure:
+```
+# POSTGRES CONFIG
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+DB_DSN=
+
+# SERVICE CONFIG
+API_HOST=
+API_PORT=
+
+# REDIS CONFIG
+REDIS_HOST=
+REDIS_PORT=
+```

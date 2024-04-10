@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  db:
+    container_name: loc-postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    networks:
+      - local
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  queue:
+    container_name: loc-redis-queue
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - local
+    restart: unless-stopped
+
+  queue-webui:
+    container_name: loc-redis-queue-ui
+    image: hibiken/asynqmon
+    ports:
+      - 8333:8080
+    networks:
+      - local
+    environment:
+      - REDIS_ADDR=queue:6379
+
+
+networks:
+  local:
+    driver: bridge
