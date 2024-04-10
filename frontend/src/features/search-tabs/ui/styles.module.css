@@ -1,0 +1,4 @@
+/* Hide under tabs grey line */
+.list::before {
+  content: none;
+}

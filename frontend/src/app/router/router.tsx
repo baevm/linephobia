@@ -1,9 +1,10 @@
+import { HomePage } from '@pages/home'
 import { RouteObject, createBrowserRouter } from 'react-router-dom'
 
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <div>root page</div>,
+    element: <HomePage />,
   },
 ]
 

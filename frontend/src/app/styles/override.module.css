@@ -1,0 +1,5 @@
+.input {
+  &:focus {
+    border: rem(1px) solid var(--mantine-color-dimmed);
+  }
+}
