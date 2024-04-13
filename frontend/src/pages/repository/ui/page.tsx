@@ -1,8 +1,8 @@
-import { useGetRepositoryQuery } from '@entities/repository/api'
-import { Anchor, Badge, Box, Flex, Group, NavLink, Stack, Text, Title } from '@mantine/core'
+import { Group } from '@mantine/core'
 import { PageLayout } from '@shared/ui'
 import { useSearchParams } from 'react-router-dom'
-import { TbEye, TbGitFork, TbLink, TbStar } from 'react-icons/tb'
+import { RepositoryAbout } from './repositoryAbout'
+import { StatsGraphs } from './statsGraphs'
 
 const data = {
   id: 29,
@@ -13,44 +13,132 @@ const data = {
   stats: {
     languages: [
       {
-        name: 'JSON',
-        bytes: 163006,
-        lines: 5968,
-        code: 5965,
-        comment: 0,
-        blank: 3,
-        complexity: 0,
-        count: 4,
+        name: 'TypeScript',
+        bytes: 104612,
+        lines: 3723,
+        code: 2997,
+        comment: 166,
+        blank: 560,
+        complexity: 450,
+        count: 65,
         files: [],
       },
       {
-        name: 'Zsh',
-        bytes: 90939,
-        lines: 1770,
-        code: 451,
-        comment: 1124,
-        blank: 195,
-        complexity: 38,
-        count: 2,
+        name: 'CSS',
+        bytes: 18343,
+        lines: 994,
+        code: 867,
+        comment: 15,
+        blank: 112,
+        complexity: 0,
+        count: 16,
+        files: [],
+      },
+      {
+        name: 'JSON',
+        bytes: 21927,
+        lines: 227,
+        code: 226,
+        comment: 0,
+        blank: 1,
+        complexity: 0,
+        count: 7,
         files: [],
       },
       {
         name: 'Markdown',
-        bytes: 4177,
-        lines: 137,
-        code: 105,
+        bytes: 1554,
+        lines: 48,
+        code: 37,
         comment: 0,
-        blank: 32,
+        blank: 11,
+        complexity: 0,
+        count: 2,
+        files: [],
+      },
+      {
+        name: 'Dockerfile',
+        bytes: 335,
+        lines: 16,
+        code: 10,
+        comment: 1,
+        blank: 5,
+        complexity: 0,
+        count: 1,
+        files: [],
+      },
+      {
+        name: 'HTML',
+        bytes: 885,
+        lines: 22,
+        code: 19,
+        comment: 0,
+        blank: 3,
+        complexity: 0,
+        count: 1,
+        files: [],
+      },
+      {
+        name: 'Plain Text',
+        bytes: 22,
+        lines: 2,
+        code: 2,
+        comment: 0,
+        blank: 0,
+        complexity: 0,
+        count: 1,
+        files: [],
+      },
+      {
+        name: 'SVG',
+        bytes: 2125,
+        lines: 15,
+        code: 15,
+        comment: 0,
+        blank: 0,
+        complexity: 0,
+        count: 1,
+        files: [],
+      },
+      {
+        name: 'TypeScript Typings',
+        bytes: 38,
+        lines: 1,
+        code: 0,
+        comment: 1,
+        blank: 0,
+        complexity: 0,
+        count: 1,
+        files: [],
+      },
+      {
+        name: 'YAML',
+        bytes: 126,
+        lines: 9,
+        code: 8,
+        comment: 0,
+        blank: 1,
+        complexity: 0,
+        count: 1,
+        files: [],
+      },
+      {
+        name: 'gitignore',
+        bytes: 253,
+        lines: 24,
+        code: 20,
+        comment: 2,
+        blank: 2,
         complexity: 0,
         count: 1,
         files: [],
       },
     ],
     total: {
-      lines: 7875,
-      blank: 230,
-      comment: 1124,
-      code: 6521,
+      lines: 5081,
+      blank: 695,
+      comment: 185,
+      code: 4201,
       files: 0,
     },
   },
@@ -61,58 +149,14 @@ export const RepositoryPage = () => {
   const gitUrl = searchParams.get('git_url')
 
   // const { data } = useGetRepositoryQuery(gitUrl!)
-
-  console.log(data)
+  // console.log(data)
 
   return (
-    <PageLayout align='start'>
-      <Group justify='space-between' w='100%' px='10rem'>
+    <PageLayout align='start' withSearch py='xl'>
+      <Group justify='space-between' align='flex-start' w='100%' px='8rem'>
         <RepositoryAbout />
-        <Box>Graph</Box>
+        <StatsGraphs data={data} />
       </Group>
     </PageLayout>
-  )
-}
-
-export const RepositoryAbout = () => {
-  return (
-    <Stack>
-      <Group align='center'>
-        <Title order={3}>facebook / react</Title>
-        <Badge color='gray' variant='light'>
-          100 MB
-        </Badge>
-      </Group>
-      <Group>
-        <Badge color='gray' radius='sm' variant='outline'>
-          <Group align='center'>
-            <TbEye />
-            <Box>3000</Box>
-          </Group>
-        </Badge>
-        <Badge color='gray' radius='sm' variant='outline'>
-          <Group align='center'>
-            <TbGitFork />
-            <Box>3000</Box>
-          </Group>
-        </Badge>
-        <Badge color='gray' radius='sm' variant='outline'>
-          <Group align='center'>
-            <TbStar />
-            <Box>3000</Box>
-          </Group>
-        </Badge>
-      </Group>
-      <Stack mt='lg' gap='xs'>
-        <Title order={4}>About</Title>
-        <Text>The library for web and native user interfaces.</Text>
-        <Group gap='5px'>
-          <TbLink size='20px' />
-          <Anchor href='https://react.dev' target='_blank'>
-            react.dev
-          </Anchor>
-        </Group>
-      </Stack>
-    </Stack>
   )
 }

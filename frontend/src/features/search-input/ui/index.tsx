@@ -1,9 +1,21 @@
-import { ActionIcon, Box, TextInput } from '@mantine/core'
+import { ActionIcon, Box, MantineSize, TextInput } from '@mantine/core'
 import React, { useState } from 'react'
 import { TbSearch } from 'react-icons/tb'
 import { useNavigate } from 'react-router-dom'
 
-export const SearchInput = () => {
+type SearchInputProps = {
+  size: MantineSize
+}
+
+const iconSizes: Record<MantineSize, string> = {
+  xs: '16px',
+  sm: '16px',
+  lg: '16px',
+  md: '16px',
+  xl: '24px',
+}
+
+export const SearchInput = ({ size }: SearchInputProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
 
@@ -19,11 +31,11 @@ export const SearchInput = () => {
         onChange={(event) => setSearchQuery(event.currentTarget.value)}
         type='text'
         w='100%'
-        size='xl'
+        size={size}
         placeholder='URL of git repository'
         rightSection={
           <ActionIcon variant='transparent' type='submit'>
-            <TbSearch />
+            <TbSearch size={iconSizes[size]} />
           </ActionIcon>
         }
       />

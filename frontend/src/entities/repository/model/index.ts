@@ -22,7 +22,7 @@ type RepoStats = {
 }
 
 export type Repository = {
-  id: string
+  id: number
   url: string
   owner: string
   name: string

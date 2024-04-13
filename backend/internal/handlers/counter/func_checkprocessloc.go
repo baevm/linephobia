@@ -11,11 +11,11 @@ import (
 )
 
 type CheckRequest struct {
-	Id string `param:"id"`
+	GitUrl string `query:"git_url"`
 }
 
 type CheckResponse struct {
-	State string `json:"state"`
+	Status string `json:"status"`
 }
 
 func (ch *CounterHandler) CheckProcessLOC(c echo.Context) error {
@@ -27,12 +27,12 @@ func (ch *CounterHandler) CheckProcessLOC(c echo.Context) error {
 		})
 	}
 
-	taskInfo, err := ch.counterService.SearchLOCTask(req.Id)
+	taskInfo, err := ch.counterService.SearchLOCTask(req.GitUrl)
 
 	if err != nil {
 		if errors.Is(err, counter.ErrTaskNotFound) {
 			return c.JSON(http.StatusBadRequest, handlers.ErrResponse{
-				Error: fmt.Sprintf("Task with id: %s not found", req.Id),
+				Error: fmt.Sprintf("Task with id: %s not found", req.GitUrl),
 			})
 		}
 
@@ -41,9 +41,9 @@ func (ch *CounterHandler) CheckProcessLOC(c echo.Context) error {
 		})
 	}
 
-	taskState := string(getState(taskInfo.State))
+	taskStatus := string(getState(taskInfo.State))
 
 	return c.JSON(http.StatusOK, CheckResponse{
-		State: taskState,
+		Status: taskStatus,
 	})
 }

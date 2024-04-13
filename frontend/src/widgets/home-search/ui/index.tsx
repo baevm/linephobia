@@ -9,7 +9,7 @@ export const HomeSearch = () => {
         LINEPHOBIA
       </Text>
       <Text c='dimmed'>Find count of lines of any git repository</Text>
-      <SearchInput />
+      <SearchInput size='xl' />
       <SearchTabs />
     </Stack>
   )

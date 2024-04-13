@@ -7,6 +7,7 @@ import styles from '../styles/override.module.css'
 import { IconContext } from 'react-icons'
 import { Provider } from 'react-redux'
 import { store } from '@app/store'
+import '@mantine/charts/styles.css'
 
 const theme = createTheme({
   fontFamily: 'Manrope, sans-serif',

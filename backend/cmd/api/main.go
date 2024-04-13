@@ -13,6 +13,7 @@ import (
 	"syscall"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 /*
@@ -21,13 +22,14 @@ import (
 */
 func main() {
 	/* LOAD CONFIG */
-	err := config.Load(".")
+	err := config.Load()
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	e := echo.New()
+	e.Use(middleware.CORS())
 
 	/* QUEUE SETUP */
 	redisAddr := fmt.Sprintf("%s:%s", config.Data.REDIS_HOST, config.Data.REDIS_PORT)
@@ -75,7 +77,7 @@ func main() {
 
 	/* HTTP ROUTING */
 	e.POST("/v1/loc/process", ch.ProcessLOC)
-	e.GET("/v1/loc/check/:id", ch.CheckProcessLOC)
+	e.GET("/v1/loc/check", ch.CheckProcessLOC)
 	e.GET("/v1/repo", ch.GetRepo)
 
 	e.Logger.Fatal(

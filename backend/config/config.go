@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -18,17 +19,22 @@ type Config struct {
 
 var Data Config
 
-func Load(path string) error {
-	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
+func Load() error {
+	dirname, err := os.Getwd()
 
-	if err := viper.MergeInConfig(); err != nil {
+	if err != nil {
+		panic(err)
+	}
+
+	viper.SetConfigFile(dirname + "/config/.env")
+
+	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading env file, %s", err)
 	}
 
 	viper.AutomaticEnv()
 
-	err := viper.Unmarshal(&Data)
+	err = viper.Unmarshal(&Data)
 	if err != nil {
 		log.Fatalf("unable to unmarshall into struct, %v", err)
 	}
