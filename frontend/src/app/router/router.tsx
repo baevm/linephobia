@@ -1,10 +1,15 @@
 import { HomePage } from '@pages/home'
+import { RepositoryPage } from '@pages/repository'
 import { RouteObject, createBrowserRouter } from 'react-router-dom'
 
 const routes: RouteObject[] = [
   {
     path: '/',
     element: <HomePage />,
+  },
+  {
+    path: '/repository',
+    element: <RepositoryPage />,
   },
 ]
 

@@ -1,13 +1,15 @@
-import { Box, TextInput } from '@mantine/core'
+import { ActionIcon, Box, TextInput } from '@mantine/core'
 import React, { useState } from 'react'
 import { TbSearch } from 'react-icons/tb'
+import { useNavigate } from 'react-router-dom'
 
 export const SearchInput = () => {
   const [searchQuery, setSearchQuery] = useState('')
+  const navigate = useNavigate()
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(e)
+    navigate({ pathname: '/repository', search: `?git_url=${searchQuery}` })
   }
 
   return (
@@ -19,7 +21,11 @@ export const SearchInput = () => {
         w='100%'
         size='xl'
         placeholder='URL of git repository'
-        rightSection={<TbSearch />}
+        rightSection={
+          <ActionIcon variant='transparent' type='submit'>
+            <TbSearch />
+          </ActionIcon>
+        }
       />
     </Box>
   )
