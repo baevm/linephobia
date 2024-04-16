@@ -2,9 +2,9 @@ package counter
 
 import (
 	"errors"
-	"loc-web-app/backend/internal/handlers"
-	"loc-web-app/backend/internal/models"
-	"loc-web-app/backend/internal/services/counter"
+	"linephobia/backend/internal/handlers"
+	"linephobia/backend/internal/models"
+	"linephobia/backend/internal/services/counter"
 	"net/http"
 
 	"github.com/jackc/pgx/v5/pgtype"

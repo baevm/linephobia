@@ -15,7 +15,7 @@
             {
               "column": "repostats.stats",
               "go_type": {
-                "import":"loc-web-app/backend/internal/models",
+                "import":"linephobia/backend/internal/models",
                 "package": "models",
                 "type":"LanguageSummary"
               }

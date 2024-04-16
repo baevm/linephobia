@@ -1,7 +1,7 @@
 package counter
 
 import (
-	"loc-web-app/backend/internal/services/counter"
+	"linephobia/backend/internal/services/counter"
 
 	"github.com/hibiken/asynq"
 )

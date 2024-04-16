@@ -6,7 +6,7 @@ package db
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
-	models "loc-web-app/backend/internal/models"
+	models "linephobia/backend/internal/models"
 )
 
 type Repostat struct {

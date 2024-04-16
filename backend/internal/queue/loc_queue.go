@@ -3,7 +3,7 @@ package queue
 import (
 	"encoding/json"
 	"fmt"
-	"loc-web-app/backend/pkg/git"
+	"linephobia/backend/pkg/git"
 	"time"
 
 	"github.com/hibiken/asynq"

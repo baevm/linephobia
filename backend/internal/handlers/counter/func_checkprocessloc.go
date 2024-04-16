@@ -3,8 +3,8 @@ package counter
 import (
 	"errors"
 	"fmt"
-	"loc-web-app/backend/internal/handlers"
-	"loc-web-app/backend/internal/services/counter"
+	"linephobia/backend/internal/handlers"
+	"linephobia/backend/internal/services/counter"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
