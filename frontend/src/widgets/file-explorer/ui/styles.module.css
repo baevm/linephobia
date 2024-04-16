@@ -1,0 +1,28 @@
+.explorer_container {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--mantine-color-default-border);
+  border-right: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+}
+
+.explorer_item {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-xs);
+  border-top: 1px solid var(--mantine-color-default-border);
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.explorer_item:first-child {
+  border-top-left-radius: var(--mantine-radius-md);
+  border-top-right-radius: var(--mantine-radius-md);
+}
+
+.explorer_item:last-child {
+  border-bottom: 1px solid var(--mantine-color-default-border);
+  border-bottom-left-radius: var(--mantine-radius-md);
+  border-bottom-right-radius: var(--mantine-radius-md);
+}

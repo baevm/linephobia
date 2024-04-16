@@ -1,5 +1,6 @@
-import { Group } from '@mantine/core'
+import { Group, Stack } from '@mantine/core'
 import { PageLayout } from '@shared/ui'
+import { FileExplorer } from '@widgets/file-explorer'
 import { useSearchParams } from 'react-router-dom'
 import { RepositoryAbout } from './repositoryAbout'
 import { StatsGraphs } from './statsGraphs'
@@ -152,11 +153,14 @@ export const RepositoryPage = () => {
   // console.log(data)
 
   return (
-    <PageLayout align='start' withSearch py='xl'>
-      <Group justify='space-between' align='flex-start' w='100%' px='8rem'>
-        <RepositoryAbout />
-        <StatsGraphs data={data} />
-      </Group>
+    <PageLayout align='start' withSearch>
+      <Stack w='100%' maw='1300px' p='xl'>
+        <Group justify='space-between' align='flex-start'>
+          <RepositoryAbout />
+          <StatsGraphs data={data} />
+        </Group>
+        <FileExplorer />
+      </Stack>
     </PageLayout>
   )
 }

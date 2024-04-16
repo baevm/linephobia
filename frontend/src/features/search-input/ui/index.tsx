@@ -29,7 +29,7 @@ export const SearchInput = ({ size }: SearchInputProps) => {
       <TextInput
         value={searchQuery}
         onChange={(event) => setSearchQuery(event.currentTarget.value)}
-        type='text'
+        type='url'
         w='100%'
         size={size}
         placeholder='URL of git repository'
