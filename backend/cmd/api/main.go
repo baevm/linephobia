@@ -76,8 +76,8 @@ func main() {
 	}()
 
 	/* HTTP ROUTING */
-	e.POST("/v1/loc/process", ch.ProcessLOC)
-	e.GET("/v1/loc/check", ch.CheckProcessLOC)
+	// e.POST("/v1/loc/process", ch.ProcessLOC)
+	// e.GET("/v1/loc/check", ch.CheckProcessLOC)
 	e.GET("/v1/repo", ch.GetRepo)
 
 	e.Logger.Fatal(

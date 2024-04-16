@@ -16,12 +16,13 @@ type RepoRequest struct {
 }
 
 type RepoResponse struct {
-	ID        int64                  `json:"id"`
-	Url       string                 `json:"url"`
-	Owner     string                 `json:"owner"`
-	Name      string                 `json:"name"`
-	CreatedAt pgtype.Timestamptz     `json:"created_at"`
-	Stats     models.LanguageSummary `json:"stats"`
+	ID        int64                   `json:"id,omitempty"`
+	Url       string                  `json:"url,omitempty"`
+	Owner     string                  `json:"owner,omitempty"`
+	Name      string                  `json:"name,omitempty"`
+	CreatedAt *pgtype.Timestamptz     `json:"created_at,omitempty"`
+	Stats     *models.LanguageSummary `json:"stats,omitempty"`
+	Status    string                  `json:"status"`
 }
 
 func (ch *CounterHandler) GetRepo(c echo.Context) error {
@@ -31,17 +32,49 @@ func (ch *CounterHandler) GetRepo(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, handlers.ErrResponse{
 			Error: "bad request",
 		})
+
 	}
 
+	// check if repo exists
 	repoStats, err := ch.counterService.GetRepo(req.GitUrl)
 
 	if err != nil {
+		// if repo not found
 		if errors.Is(err, counter.ErrRepoNotFound) {
-			return c.JSON(http.StatusNotFound, handlers.ErrResponse{
-				Error: "repo not found",
-			})
+			// check if task for this repo already queued
+			taskInfo, err := ch.counterService.SearchLOCTask(req.GitUrl)
+
+			if err != nil {
+				// if task not found queue task for processing
+				if errors.Is(err, counter.ErrTaskNotFound) {
+					_, err := ch.counterService.EnqueueLOCTask(req.GitUrl)
+
+					if err != nil {
+						return c.JSON(http.StatusInternalServerError, handlers.ErrResponse{
+							Error: err.Error(),
+						})
+					}
+
+					return c.JSON(http.StatusAccepted, RepoResponse{
+						Status: string(STATUS_PENDING),
+					})
+				}
+
+				return c.JSON(http.StatusInternalServerError, handlers.ErrResponse{
+					Error: "Internal server error",
+				})
+			}
+
+			if taskInfo != nil {
+				taskStatus := string(getStatus(taskInfo.State))
+
+				return c.JSON(http.StatusOK, RepoResponse{
+					Status: taskStatus,
+				})
+			}
 		}
 
+		// if repo error other than 404
 		return c.JSON(http.StatusInternalServerError, handlers.ErrResponse{
 			Error: err.Error(),
 		})
@@ -52,7 +85,8 @@ func (ch *CounterHandler) GetRepo(c echo.Context) error {
 		Url:       repoStats.Url,
 		Owner:     repoStats.Owner,
 		Name:      repoStats.Name,
-		CreatedAt: repoStats.CreatedAt,
-		Stats:     repoStats.Stats,
+		CreatedAt: &repoStats.CreatedAt,
+		Stats:     &repoStats.Stats,
+		Status:    string(STATUS_COMPLETE),
 	})
 }

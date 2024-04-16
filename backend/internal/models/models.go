@@ -15,14 +15,14 @@ type Language struct {
 }
 
 type TotalSummary struct {
-	Lines   int64 `json:"lines"`
-	Blank   int64 `json:"blank"`
-	Comment int64 `json:"comment"`
-	Code    int64 `json:"code"`
-	Files   int64 `json:"files"`
+	Lines   int64 `json:"lines,omitempty"`
+	Blank   int64 `json:"blank,omitempty"`
+	Comment int64 `json:"comment,omitempty"`
+	Code    int64 `json:"code,omitempty"`
+	Files   int64 `json:"files,omitempty"`
 }
 
 type LanguageSummary struct {
-	Languages []Language   `json:"languages"`
-	Total     TotalSummary `json:"total"`
+	Languages []Language   `json:"languages,omitempty"`
+	Total     TotalSummary `json:"total,omitempty"`
 }

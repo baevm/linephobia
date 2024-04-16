@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"linephobia/backend/pkg/git"
-	"time"
 
 	"github.com/hibiken/asynq"
 )
@@ -45,12 +44,15 @@ func NewLOCProcessTask(gitUrl string) (string, *asynq.Task, error) {
 		return "", nil, err
 	}
 
-	id := fmt.Sprintf("%s/%s/%s", urlStruct.Site, urlStruct.Owner, urlStruct.Name)
+	id := BuildTaskId(urlStruct)
 
 	return id, asynq.NewTask(
 		TypeLOCProcess,
 		payload,
 		asynq.TaskID(id),
-		asynq.MaxRetry(0),
-		asynq.Retention(30*time.Minute)), nil
+		asynq.MaxRetry(0)), nil
+}
+
+func BuildTaskId(urlStruct *git.RepoParams) string {
+	return fmt.Sprintf("%s/%s/%s", urlStruct.Site, urlStruct.Owner, urlStruct.Name)
 }

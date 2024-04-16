@@ -16,24 +16,24 @@ func NewHandler(counterService *counter.CounterService) *CounterHandler {
 	}
 }
 
-type TaskState string
+type TaskStatus string
 
 const (
-	STATE_PENDING    TaskState = "pending"
-	STATE_PROCESSING TaskState = "processing"
-	STATE_COMPLETE   TaskState = "complete"
-	STATE_ERROR      TaskState = "error"
+	STATUS_PENDING    TaskStatus = "pending"
+	STATUS_PROCESSING TaskStatus = "processing"
+	STATUS_COMPLETE   TaskStatus = "complete"
+	STATUS_ERROR      TaskStatus = "error"
 )
 
-func getState(asynqState asynq.TaskState) TaskState {
+func getStatus(asynqState asynq.TaskState) TaskStatus {
 	switch asynqState {
 	case asynq.TaskStatePending:
-		return STATE_PENDING
+		return STATUS_PENDING
 	case asynq.TaskStateActive:
-		return STATE_PROCESSING
+		return STATUS_PROCESSING
 	case asynq.TaskStateCompleted:
-		return STATE_COMPLETE
+		return STATUS_COMPLETE
 	default:
-		return STATE_ERROR
+		return STATUS_ERROR
 	}
 }

@@ -41,7 +41,7 @@ func (ch *CounterHandler) CheckProcessLOC(c echo.Context) error {
 		})
 	}
 
-	taskStatus := string(getState(taskInfo.State))
+	taskStatus := string(getStatus(taskInfo.State))
 
 	return c.JSON(http.StatusOK, CheckResponse{
 		Status: taskStatus,

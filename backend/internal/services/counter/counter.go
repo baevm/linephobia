@@ -100,7 +100,15 @@ func (cs *CounterService) EnqueueLOCTask(gitUrl string) (string, error) {
 }
 
 // Поиск задачи на обработку репозитория
-func (cs *CounterService) SearchLOCTask(taskId string) (*asynq.TaskInfo, error) {
+func (cs *CounterService) SearchLOCTask(gitUrl string) (*asynq.TaskInfo, error) {
+	urlStruct, err := git.DecodeURL(gitUrl)
+
+	if err != nil {
+		return nil, err
+	}
+
+	taskId := queue.BuildTaskId(urlStruct)
+
 	taskInfo, err := cs.queue.Inspector.GetTaskInfo("default", taskId)
 
 	if err != nil {
