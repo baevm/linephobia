@@ -1,52 +1,62 @@
+import { Repository } from '@entities/repository/model'
 import { Anchor, Badge, Box, Group, Stack, Text, Title } from '@mantine/core'
+import { formatKbToMb, getURLHostname } from '@shared/lib/formatters'
 import { TbEye, TbGitFork, TbLink, TbStar } from 'react-icons/tb'
+import { IoLogoGithub } from 'react-icons/io5'
 
-export const RepositoryAbout = () => {
+export const RepositoryAbout = ({ repository }: { repository?: Repository }) => {
   return (
     <Stack maw='450px'>
       <Group align='center'>
-        <Title order={3}>facebook / react</Title>
+        <Group gap='5px' align='center'>
+          <IoLogoGithub size='24px' />
+
+          <Title order={3}>
+            @{repository?.owner.login} / {repository?.name}
+          </Title>
+        </Group>
         <Badge color='gray' variant='light'>
-          100 MB
+          {formatKbToMb(repository?.size)}
         </Badge>
       </Group>
       <Group>
         <Badge color='gray' radius='sm' variant='outline'>
           <Group align='center'>
             <TbEye />
-            <Box>3000</Box>
+            <Box>{repository?.subscribers_count}</Box>
           </Group>
         </Badge>
         <Badge color='gray' radius='sm' variant='outline'>
           <Group align='center'>
             <TbGitFork />
-            <Box>3000</Box>
+            <Box>{repository?.forks_count}</Box>
           </Group>
         </Badge>
         <Badge color='gray' radius='sm' variant='outline'>
           <Group align='center'>
             <TbStar />
-            <Box>3000</Box>
+            <Box>{repository?.stargazers_count}</Box>
           </Group>
         </Badge>
       </Group>
       <Stack mt='lg' gap='xs'>
-        <Title order={4}>About</Title>
-        <Text>The library for web and native user interfaces.</Text>
+        {repository?.description && (
+          <>
+            <Title order={4}>About</Title>
+            <Text>{repository?.description}</Text>
+          </>
+        )}
         <Group gap='5px'>
           <TbLink size='20px' />
-          <Anchor href='https://react.dev' target='_blank'>
-            react.dev
+          <Anchor href={repository?.homepage} target='_blank'>
+            {getURLHostname(repository?.homepage)}
           </Anchor>
         </Group>
       </Stack>
       <Group gap='xs'>
-        <Badge>react</Badge>
-        <Badge>javascript</Badge>
-        <Badge>library</Badge>
-        <Badge>ui</Badge>
-        <Badge>frontend</Badge>
-        <Badge>declarative</Badge>
+        {repository?.topics.map((topic) => (
+          <Badge>{topic}</Badge>
+        ))}
       </Group>
     </Stack>
   )

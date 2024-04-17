@@ -1,57 +1,37 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Repository } from '../model'
+import { Repository, RepositoryContent, RepositoryStats } from '../model'
+import { getRepoFullname } from '@shared/lib/git'
 
-const baseUrl = 'http://localhost:8080/v1/'
+const STATS_API = 'http://localhost:8080/v1/'
+const GITHUB_API = 'https://api.github.com/repos'
+
+type RepoFullname = {
+  owner: string
+  name: string
+}
 
 export const RepositoryApi = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
+  baseQuery: fetchBaseQuery({ baseUrl: STATS_API }),
   endpoints: (builder) => ({
-    getRepository: builder.query<Repository, string>({
-      queryFn: async (url, _queryApi, _extraOptions, fetchBQ) => {
-        const repo = await fetchBQ(baseUrl + `repo?git_url=${url}`)
+    getStats: builder.query<RepositoryStats, string>({
+      query: (gitUrl) => `repo?git_url=${encodeURIComponent(gitUrl)}`,
+    }),
 
-        if (repo.data) return { data: repo.data as Repository }
+    getRepoContent: builder.query<RepositoryContent, RepoFullname>({
+      queryFn: async ({ name, owner }, _api, _opts, fetchBQ) => {
+        // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
+        const content = await fetchBQ(`${GITHUB_API}/${owner}/${name}/contents`)
 
-        if (repo.error && repo.error?.status === 404) {
-          const taskPromise = new Promise(async (resolve, reject) => {
-            const processTask = (await fetchBQ({
-              url: baseUrl + `loc/process`,
-              method: 'POST',
-              body: {
-                git_url: url,
-              },
-            })) as any
-
-            if (processTask.error) {
-              reject(processTask)
-            }
-
-            const interval = setInterval(async () => {
-              const currentStatus = (await fetchBQ(baseUrl + `loc/check?git_url=${processTask.data.id}`)) as any
-
-              if (currentStatus.error) {
-                reject(currentStatus)
-              }
-
-              if (currentStatus?.data?.status === 'complete') {
-                const newRepo = await fetchBQ(baseUrl + `repo?git_url=${url}`)
-                clearInterval(interval)
-                resolve(newRepo)
-              }
-            }, 2000)
-          })
-
-          const taskRepo = (await Promise.resolve(taskPromise)) as any
-
-          return taskRepo.data
-            ? { data: taskRepo.data as Repository }
-            : { error: taskRepo.error as FetchBaseQueryError }
-        }
-
-        return repo.data ? { data: repo.data as Repository } : { error: repo.error as FetchBaseQueryError }
+        return content.data
+          ? { data: content.data as RepositoryContent }
+          : { error: content.error as FetchBaseQueryError }
       },
+    }),
+
+    getRepo: builder.query<Repository, RepoFullname>({
+      query: ({ owner, name }) => ({ url: `${GITHUB_API}/${owner}/${name}` }),
     }),
   }),
 })
 
-export const { useGetRepositoryQuery, useLazyGetRepositoryQuery } = RepositoryApi
+export const { useGetStatsQuery, useLazyGetStatsQuery, useGetRepoContentQuery, useGetRepoQuery } = RepositoryApi

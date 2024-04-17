@@ -4,6 +4,10 @@ import { RouteObject, createBrowserRouter } from 'react-router-dom'
 
 const routes: RouteObject[] = [
   {
+    path: '*',
+    element: <div>404 not found</div>,
+  },
+  {
     path: '/',
     element: <HomePage />,
   },
