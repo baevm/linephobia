@@ -42,7 +42,9 @@ export type RepositoryContent = {
   html_url: string
   git_url: string
   download_url: string
-  type: string
+  type: 'dir' | 'file'
+  content?: string
+  encoding?: string
   _links: {
     self: string
     git: string

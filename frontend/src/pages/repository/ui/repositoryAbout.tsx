@@ -1,10 +1,21 @@
-import { Repository } from '@entities/repository/model'
+import { useGetRepoQuery } from '@entities/repository/api'
 import { Anchor, Badge, Box, Group, Stack, Text, Title } from '@mantine/core'
 import { formatKbToMb, getURLHostname } from '@shared/lib/formatters'
-import { TbEye, TbGitFork, TbLink, TbStar } from 'react-icons/tb'
+import { useGetFullnameFromURL } from '@shared/lib/git'
 import { IoLogoGithub } from 'react-icons/io5'
+import { TbEye, TbGitFork, TbLink, TbStar } from 'react-icons/tb'
+import { useNavigate } from 'react-router-dom'
 
-export const RepositoryAbout = ({ repository }: { repository?: Repository }) => {
+export const RepositoryAbout = () => {
+  const { owner, repoName, gitUrl } = useGetFullnameFromURL()
+  const { data: repository, isLoading: isRepoLoading, error: repoError } = useGetRepoQuery({ owner, name: repoName })
+
+  const navigate = useNavigate()
+
+  if (repoError) {
+    navigate('/404')
+  }
+
   return (
     <Stack maw='450px'>
       <Group align='center'>

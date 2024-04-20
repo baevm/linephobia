@@ -2,7 +2,7 @@
 
 
 
-1. create .env file at root with structure:
+1. create .env file at ./config with structure:
 ```
 # POSTGRES CONFIG
 POSTGRES_USER=

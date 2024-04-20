@@ -17,13 +17,17 @@ export const RepositoryApi = createApi({
       query: (gitUrl) => `repo?git_url=${encodeURIComponent(gitUrl)}`,
     }),
 
-    getRepoContent: builder.query<RepositoryContent, RepoFullname>({
-      queryFn: async ({ name, owner }, _api, _opts, fetchBQ) => {
+    getRepoContent: builder.query<RepositoryContent[], string>({
+      queryFn: async (gitUrl, _api, _opts, fetchBQ) => {
+        const { owner, repoName } = getRepoFullname(gitUrl)
+        const url = new URL(gitUrl)
+        const fetchApiUrl = url.host === 'api.github.com' ? url.href : `${GITHUB_API}/${owner}/${repoName}/contents`
+
         // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
-        const content = await fetchBQ(`${GITHUB_API}/${owner}/${name}/contents`)
+        const content = await fetchBQ(fetchApiUrl)
 
         return content.data
-          ? { data: content.data as RepositoryContent }
+          ? { data: content.data as RepositoryContent[] }
           : { error: content.error as FetchBaseQueryError }
       },
     }),

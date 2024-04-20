@@ -1,9 +1,9 @@
+import { useGetStatsQuery } from '@entities/repository/api'
 import { RepositoryStats } from '@entities/repository/model'
 import { BarChart, DonutChart, DonutChartCell } from '@mantine/charts'
 import { Anchor, Loader, SegmentedControl, Stack, Text } from '@mantine/core'
-import { getRepoFullname } from '@shared/lib/git'
-import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useGetFullnameFromURL } from '@shared/lib/git'
+import { useEffect, useState } from 'react'
 
 type Charts = 'Bar' | 'Pie' | 'Table'
 
@@ -65,15 +65,28 @@ const renderGraph = (currentChart: string, data?: RepositoryStats) => {
   }
 }
 
-export const StatsGraphs = ({ data }: { data?: RepositoryStats }) => {
+export const StatsGraphs = () => {
+  const [refetchTimeout, setRefetchTimeout] = useState(3000)
   const [currentChart, setCurrentChart] = useState('Bar')
-  const [searchParams] = useSearchParams()
-  const gitUrl = searchParams.get('git_url') ?? ''
+  const { owner, repoName, gitUrl } = useGetFullnameFromURL()
 
-  const { owner, repoName } = getRepoFullname(gitUrl)
-  const gitShortName = `@${owner}/${repoName}`
+  const formattedName = `@${owner}/${repoName}`
 
-  if (data && data.status === 'pending') {
+  const {
+    data: stats,
+    isLoading: isStatsLoading,
+    isError,
+  } = useGetStatsQuery(gitUrl!, {
+    pollingInterval: refetchTimeout,
+  })
+
+  useEffect(() => {
+    if (stats && stats.status === 'complete') {
+      setRefetchTimeout(0)
+    }
+  }, [stats])
+
+  if (stats && stats.status === 'pending') {
     return (
       <Stack
         align='center'
@@ -84,14 +97,14 @@ export const StatsGraphs = ({ data }: { data?: RepositoryStats }) => {
         p='md'
         style={{ border: '1px solid var(--mantine-color-default-border)', borderRadius: 'var(--mantine-radius-md)' }}>
         <Text ta='center' c='dimmed'>
-          Task for processing repository <Anchor href={gitUrl}>{gitShortName}</Anchor> is in queue...
+          Task for processing repository <Anchor href={gitUrl}>{formattedName}</Anchor> is in queue...
         </Text>
         <Loader type='dots' />
       </Stack>
     )
   }
 
-  if (data && data.status === 'processing') {
+  if (stats && stats.status === 'processing') {
     return (
       <Stack
         align='center'
@@ -102,24 +115,24 @@ export const StatsGraphs = ({ data }: { data?: RepositoryStats }) => {
         p='md'
         style={{ border: '1px solid var(--mantine-color-default-border)', borderRadius: 'var(--mantine-radius-md)' }}>
         <Text>
-          Task for repository <Anchor href={gitUrl}>{gitShortName}</Anchor> is processing...
+          Task for repository <Anchor href={gitUrl}>{formattedName}</Anchor> is processing...
         </Text>
         <Loader />
       </Stack>
     )
   }
 
-  if (data && data.status === 'error') {
+  if (stats && stats.status === 'error') {
     return (
       <Stack align='center' justify='center' w='500px' h='500px' gap='10px'>
-        <Text>Failed to process repository {gitShortName}.</Text>
+        <Text>Failed to process repository {formattedName}.</Text>
       </Stack>
     )
   }
 
   return (
     <Stack w='500px' h='500px' gap='10px'>
-      {renderGraph(currentChart, data)}
+      {renderGraph(currentChart, stats)}
       <SegmentedControl
         data={[
           { label: 'Bar', value: 'Bar' },
