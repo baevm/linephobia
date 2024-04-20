@@ -40,10 +40,12 @@ export const FileExplorer = () => {
   return (
     <div className={styles.explorer_container}>
       {isWithParent && (
-        <div className={styles.explorer_item} onClick={() => handleBack()}>
-          <TbFolder size='20px' />
-          <div className={styles.explorer_item_label}>...</div>
-        </div>
+        <>
+          <div className={styles.explorer_item} onClick={() => handleBack()}>
+            <TbFolder size='20px' />
+            <div className={styles.explorer_item_label}>...</div>
+          </div>
+        </>
       )}
       {!isFetching &&
         sortedFiles.map((file) => (

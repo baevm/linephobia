@@ -3,7 +3,7 @@ import { useGetFullnameFromURL } from '@shared/lib/git'
 import { PageLayout } from '@shared/ui'
 import { FileExplorer } from '@widgets/file-explorer'
 import { RepositoryAbout } from './repositoryAbout'
-import { StatsGraphs } from './statsGraphs'
+import { StatsGraphs } from '@widgets/stats-graphs'
 
 export const RepositoryPage = () => {
   const { owner, repoName } = useGetFullnameFromURL()
