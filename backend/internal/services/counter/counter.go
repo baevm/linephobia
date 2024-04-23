@@ -109,7 +109,7 @@ func (cs *CounterService) SearchLOCTask(gitUrl string) (*asynq.TaskInfo, error) 
 
 	taskId := queue.BuildTaskId(urlStruct)
 
-	taskInfo, err := cs.queue.Inspector.GetTaskInfo("default", taskId)
+	taskInfo, err := cs.queue.Inspector.GetTaskInfo(queue.PROCESSOR_QUEUE, taskId)
 
 	if err != nil {
 		return nil, err

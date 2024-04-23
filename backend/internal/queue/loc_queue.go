@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	TypeLOCProcess = "loc:process"
+	PROCESSOR_QUEUE = "git-processor"
+	TypeLOCProcess  = "loc:process"
 )
 
 type LOCProcessPayload struct {
@@ -49,6 +50,7 @@ func NewLOCProcessTask(gitUrl string) (string, *asynq.Task, error) {
 	return id, asynq.NewTask(
 		TypeLOCProcess,
 		payload,
+		asynq.Queue(PROCESSOR_QUEUE),
 		asynq.TaskID(id),
 		asynq.MaxRetry(0)), nil
 }

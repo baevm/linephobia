@@ -18,3 +18,13 @@ API_PORT=
 REDIS_HOST=
 REDIS_PORT=
 ```
+
+2. migrate db
+```
+make db/migrate
+```
+
+3. start up
+```
+make run
+```

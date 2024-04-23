@@ -39,7 +39,7 @@ func main() {
 	queueServer := queue.NewServer(redisAddr)
 
 	/* DB SETUP */
-	pg, err := db.NewPg(config.Data.DB_DSN)
+	pg, err := db.NewPG(config.Data.DB_DSN)
 
 	if err != nil {
 		log.Fatalln(err)

@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPg(db_dsn string) (*pgxpool.Pool, error) {
+func NewPG(db_dsn string) (*pgxpool.Pool, error) {
 	log.Println("Connecting to db...")
 	db, err := pgxpool.New(context.Background(), db_dsn)
 

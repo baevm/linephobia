@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  queue:
+    container_name: loc-redis-queue
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - local
+    restart: unless-stopped
+
+  queue-webui:
+    container_name: loc-redis-queue-ui
+    image: hibiken/asynqmon
+    ports:
+      - 8333:8080
+    networks:
+      - local
+    environment:
+      - REDIS_ADDR=queue:6379
+
+
+networks:
+  local:
+    driver: bridge
