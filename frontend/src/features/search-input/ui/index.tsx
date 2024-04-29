@@ -17,6 +17,7 @@ import { IoLogoGithub } from 'react-icons/io5'
 import { TbSearch } from 'react-icons/tb'
 import { useNavigate } from 'react-router-dom'
 import { GitSiteSwitcher } from './gitSiteSwitcher'
+import { addToHistory } from '../lib/searchHistory'
 
 type SearchInputProps = {
   size: MantineSize
@@ -48,7 +49,13 @@ export const SearchInput = ({ size }: SearchInputProps) => {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    navigate({ pathname: '/repository', search: `?git_url=${searchQuery}` })
+
+    const isValidUrl = URL.canParse(searchQuery)
+
+    if (isValidUrl) {
+      addToHistory({ html_url: searchQuery })
+      navigate({ pathname: '/repository', search: `?git_url=${searchQuery}` })
+    }
   }
 
   const handleChange = (val: string) => {
@@ -66,11 +73,12 @@ export const SearchInput = ({ size }: SearchInputProps) => {
     }
   }
 
-  const onOptionSubmit = (value: string) => {
-    navigate({ pathname: '/repository', search: `?git_url=${value}` })
+  const onOptionSubmit = (html_url: string) => {
+    addToHistory({ html_url: html_url })
+    navigate({ pathname: '/repository', search: `?git_url=${html_url}` })
   }
 
-  const options = useMemo(() => {
+  const searchResults = useMemo(() => {
     if (searchQuery.length === 0) return []
 
     return (
@@ -113,9 +121,9 @@ export const SearchInput = ({ size }: SearchInputProps) => {
           />
         </Combobox.Target>
 
-        <Combobox.Dropdown hidden={options.length === 0}>
+        <Combobox.Dropdown hidden={searchResults.length === 0}>
           <ScrollArea.Autosize mah={250} type='scroll'>
-            <Combobox.Options>{options.length > 0 && options}</Combobox.Options>
+            <Combobox.Options>{searchResults.length > 0 && searchResults}</Combobox.Options>
           </ScrollArea.Autosize>
         </Combobox.Dropdown>
       </Combobox>
