@@ -57,16 +57,18 @@ export const RepositoryAbout = () => {
             <Text>{repository?.description}</Text>
           </>
         )}
-        <Group gap='5px'>
-          <TbLink size='20px' />
-          <Anchor href={repository?.homepage} target='_blank'>
-            {getURLHostname(repository?.homepage)}
-          </Anchor>
-        </Group>
+        {repository?.homepage && (
+          <Group gap='5px'>
+            <TbLink size='20px' />
+            <Anchor href={repository?.homepage} target='_blank'>
+              {getURLHostname(repository?.homepage)}
+            </Anchor>
+          </Group>
+        )}
       </Stack>
       <Group gap='xs'>
         {repository?.topics.map((topic) => (
-          <Badge>{topic}</Badge>
+          <Badge key={topic}>{topic}</Badge>
         ))}
       </Group>
     </Stack>

@@ -12,7 +12,7 @@ export const Header = ({ withSearch }: HeaderProps) => {
       <ActionIcon variant='transparent'>
         <TbMenu2 />
       </ActionIcon>
-      <Box w='420px'>{withSearch && <SearchInput size='xs' />}</Box>
+      <Box w='420px'>{withSearch && <SearchInput size='sm' />}</Box>
       <ActionIcon variant='transparent'>
         <TbMoonStars />
       </ActionIcon>

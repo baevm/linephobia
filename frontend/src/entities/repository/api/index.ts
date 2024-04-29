@@ -39,7 +39,7 @@ export const RepositoryApi = createApi({
 
     searchRepos: builder.query<SearchRepositories, string>({
       query: (searchQuery) => ({
-        url: `${GITHUB_API}/search/repositories?q=${encodeURIComponent(`${searchQuery} in:name`)}&per_page=10`,
+        url: `${GITHUB_API}/search/repositories?q=${encodeURIComponent(`${searchQuery} in:name`)}&per_page=10&sort=stars`,
       }),
     }),
   }),
