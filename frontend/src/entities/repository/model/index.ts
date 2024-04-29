@@ -52,6 +52,11 @@ export type RepositoryContent = {
   }
 }
 
+export type SearchRepositories = {
+  total_count: number
+  items: Repository[]
+}
+
 export type Repository = {
   id: number
   node_id: string

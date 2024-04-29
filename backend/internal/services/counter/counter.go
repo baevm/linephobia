@@ -125,15 +125,15 @@ func (cs *CounterService) HandleLOCProcessTask(ctx context.Context, t *asynq.Tas
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
 
-	log.Printf("starting processing repo: task_id=%s, git_Url=%s\n", "todo", p.GitUrl)
+	log.Printf("starting processing repo: git_Url=%s\n", p.GitUrl)
 
 	ls, err := processRepoLOC(p.GitUrl)
 
 	if err != nil {
-		log.Printf("failed to process repo: task_id=%s, git_Url=%s, error: %s\n", "todo", p.GitUrl, err.Error())
+		log.Printf("failed to process repo: git_Url=%s, error: %s\n", p.GitUrl, err.Error())
 	}
 
-	log.Printf("finished processing repo: task_id=%s, git_Url=%s\n", "todo", p.GitUrl)
+	log.Printf("finished processing repo: git_Url=%s\n", p.GitUrl)
 
 	/* Сохранение json статов в БД */
 	res, err := cs.db.SaveRepo(context.Background(), db.SaveRepoParams{
@@ -141,23 +141,24 @@ func (cs *CounterService) HandleLOCProcessTask(ctx context.Context, t *asynq.Tas
 		Site:  p.RepoSite,
 		Owner: p.RepoOwner,
 		Name:  p.RepoName,
-		Stats: ls,
+		Stats: *ls,
 	})
 
 	if err != nil {
 		log.Printf("failed to save repo in db: task_id=%s, git_Url=%s, error: %s\n", "todo", p.GitUrl, err.Error())
+	} else {
+		log.Printf("saved repo in db: task_id=%s, git_Url=%s, created_at: %s\n", "todo", p.GitUrl, res.CreatedAt.Time.Local().String())
 	}
-
-	log.Printf("saved repo in db: task_id=%s, git_Url=%s, created_at: %s\n", "todo", p.GitUrl, res.CreatedAt.Time.Local().String())
 
 	return nil
 }
 
-func processRepoLOC(gitUrl string) (models.LanguageSummary, error) {
+func processRepoLOC(gitUrl string) (*models.LanguageSummary, error) {
 	/* CLONE REPO */
 	repoUrl, err := url.Parse(gitUrl)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return nil, fmt.Errorf("failed to clone repository")
 	}
 
 	repoFullName := repoUrl.Path
@@ -165,7 +166,8 @@ func processRepoLOC(gitUrl string) (models.LanguageSummary, error) {
 
 	_, err = git.Clone(repoPath, repoUrl.String())
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return nil, fmt.Errorf("failed to clone repository")
 	}
 
 	/* RUN SCC PROCESSOR */
@@ -175,17 +177,18 @@ func processRepoLOC(gitUrl string) (models.LanguageSummary, error) {
 	processor.DirFilePaths = []string{repoPath}
 	processor.FileOutput = resPath
 	processor.Format = "json"
-	processor.ConfigureGc()
+	// processor.ConfigureGc()
 	processor.ConfigureLazy(true)
 	processor.Process()
 
-	defer cleanUp(repoPath)
+	defer CleanUp(repoPath)
 
 	/* READ AND RETURN RESULT */
 	file, err := os.Open(resPath)
 
 	if err != nil {
 		log.Println(err)
+		return nil, fmt.Errorf("failed to process repository")
 	}
 
 	defer file.Close()
@@ -194,6 +197,7 @@ func processRepoLOC(gitUrl string) (models.LanguageSummary, error) {
 
 	if err != nil {
 		log.Println(err)
+		return nil, fmt.Errorf("failed to clone repository")
 	}
 
 	var languagesData []models.Language
@@ -202,9 +206,10 @@ func processRepoLOC(gitUrl string) (models.LanguageSummary, error) {
 
 	if err != nil {
 		log.Println(err)
+		return nil, fmt.Errorf("failed to clone repository")
 	}
 
-	ls := models.LanguageSummary{
+	ls := &models.LanguageSummary{
 		Languages: languagesData,
 		Total:     models.TotalSummary{},
 	}
@@ -220,7 +225,14 @@ func processRepoLOC(gitUrl string) (models.LanguageSummary, error) {
 	return ls, nil
 }
 
-func cleanUp(path string) {
+func ClearTempReposFolder() {
+	err := os.RemoveAll(REPOS_FOLDER)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func CleanUp(path string) {
 	err := os.RemoveAll(path)
 	if err != nil {
 		log.Println(err)

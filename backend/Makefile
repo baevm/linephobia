@@ -33,12 +33,12 @@ test:
 ## compose: runs local docker compose
 .PHONY: compose/local
 compose/local:
-	docker compose -f ./deploy/docker-compose.yml --env-file ./config/.env up
+	docker compose -f ../deploy/docker-compose.yml --env-file ./config/.env up
 
 ## compose: runs production docker compose
 .PHONY: compose/prod
 compose/prod:
-	docker compose -f ./deploy/prod.docker-compose.yml --env-file ./config/.env up
+	docker compose -f ../deploy/prod.docker-compose.yml --env-file ./config/.env up
 
 ## docker/build: builds docker image
 # .PHONY: docker/build

@@ -35,6 +35,7 @@ func DecodeURL(gitUrl string) (*RepoParams, error) {
 
 func Clone(path string, repoUrl string) (*goGit.Repository, error) {
 	return goGit.PlainClone(path, false, &goGit.CloneOptions{
-		URL: repoUrl,
+		URL:   repoUrl,
+		Depth: 1,
 	})
 }

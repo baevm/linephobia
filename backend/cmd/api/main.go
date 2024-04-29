@@ -72,13 +72,12 @@ func main() {
 
 		log.Println("Got shutdown signal.")
 
-		e.Shutdown(context.TODO())
 		queueServer.Shutdown()
+		counterSvc.ClearTempReposFolder()
+		e.Shutdown(context.TODO())
 	}()
 
 	/* HTTP ROUTING */
-	// e.POST("/v1/loc/process", ch.ProcessLOC)
-	// e.GET("/v1/loc/check", ch.CheckProcessLOC)
 	e.GET("/v1/repo", ch.GetRepo)
 
 	e.Logger.Fatal(

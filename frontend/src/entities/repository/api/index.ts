@@ -1,9 +1,9 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Repository, RepositoryContent, RepositoryStats } from '../model'
+import { Repository, RepositoryContent, RepositoryStats, SearchRepositories } from '../model'
 import { getRepoFullname } from '@shared/lib/git'
 
 const STATS_API = 'http://localhost:8080/v1/'
-const GITHUB_API = 'https://api.github.com/repos'
+const GITHUB_API = 'https://api.github.com'
 
 type RepoFullname = {
   owner: string
@@ -21,7 +21,8 @@ export const RepositoryApi = createApi({
       queryFn: async (gitUrl, _api, _opts, fetchBQ) => {
         const { owner, repoName } = getRepoFullname(gitUrl)
         const url = new URL(gitUrl)
-        const fetchApiUrl = url.host === 'api.github.com' ? url.href : `${GITHUB_API}/${owner}/${repoName}/contents`
+        const fetchApiUrl =
+          url.host === 'api.github.com' ? url.href : `${GITHUB_API}/repos/${owner}/${repoName}/contents`
 
         // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
         const content = await fetchBQ(fetchApiUrl)
@@ -33,9 +34,22 @@ export const RepositoryApi = createApi({
     }),
 
     getRepo: builder.query<Repository, RepoFullname>({
-      query: ({ owner, name }) => ({ url: `${GITHUB_API}/${owner}/${name}` }),
+      query: ({ owner, name }) => ({ url: `${GITHUB_API}/repos/${owner}/${name}` }),
+    }),
+
+    searchRepos: builder.query<SearchRepositories, string>({
+      query: (searchQuery) => ({
+        url: `${GITHUB_API}/search/repositories?q=${encodeURIComponent(`${searchQuery} in:name`)}&per_page=10`,
+      }),
     }),
   }),
 })
 
-export const { useGetStatsQuery, useLazyGetStatsQuery, useGetRepoContentQuery, useGetRepoQuery } = RepositoryApi
+export const {
+  useGetStatsQuery,
+  useLazyGetStatsQuery,
+  useGetRepoContentQuery,
+  useGetRepoQuery,
+  useSearchReposQuery,
+  useLazySearchReposQuery,
+} = RepositoryApi
