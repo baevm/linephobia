@@ -1,13 +1,13 @@
+import { store } from '@app/store'
+import '@mantine/charts/styles.css'
 import { Input, MantineProvider, createTheme } from '@mantine/core'
 import '@mantine/core/styles.css'
+import { IconContext } from 'react-icons'
+import { Provider } from 'react-redux'
 import { RouterProvider } from 'react-router-dom'
 import { router } from '../router'
 import '../styles/global.css'
 import styles from '../styles/override.module.css'
-import { IconContext } from 'react-icons'
-import { Provider } from 'react-redux'
-import { store } from '@app/store'
-import '@mantine/charts/styles.css'
 
 const theme = createTheme({
   fontFamily: 'Manrope, sans-serif',

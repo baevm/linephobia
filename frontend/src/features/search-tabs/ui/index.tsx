@@ -5,6 +5,7 @@ import styles from './styles.module.css'
 import { getSearchHistory } from '@features/search-input'
 import { getRepoFullname } from '@shared/lib/git'
 
+// TODO: popular & recent tabs
 const popular = ['@facebook/react', '@moby/moby', '@swc-project/swc', '@angular/angular']
 const recent = ['@facebook/react', '@moby/moby', '@swc-project/swc', '@angular/angular']
 

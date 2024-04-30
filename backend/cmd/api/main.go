@@ -17,10 +17,11 @@ import (
 )
 
 /*
-1. Добавить логгер
-2. Добавить swagger doc
-3. Добавить size limit для репозиториев (например dotnet roslyn весит 1гб)
-4. Пофиксить high ram usage при обработке ?????
+TODO: backend
+ 1. Добавить логгер
+ 2. Добавить swagger doc
+ 3. Добавить size limit для репозиториев (например dotnet roslyn весит 1гб)
+ 4. Пофиксить high ram usage при обработке ?????
 */
 func main() {
 	/* LOAD CONFIG */

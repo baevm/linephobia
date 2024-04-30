@@ -35,11 +35,14 @@
 
 body {
   font-family: 'Manrope', sans-serif;
-  background: #fff;
 }
 
 body,
-#root,
+html {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
 #root {
-  height: 100vh;
+  height: 100%;
 }

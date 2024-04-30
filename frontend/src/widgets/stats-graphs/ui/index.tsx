@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { RenderGraph } from './RenderGraph'
 import { Charts } from '../model'
 
+// TODO: при больщом количестве языков они не отображаются в легенде на графах
 export const StatsGraphs = () => {
   const [refetchTimeout, setRefetchTimeout] = useState(3000)
   const [currentChart, setCurrentChart] = useState<Charts>('Bar')
