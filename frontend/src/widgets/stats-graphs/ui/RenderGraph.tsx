@@ -13,7 +13,7 @@ export const RenderGraph = ({ currentChart, data }: Props) => {
     case 'Bar':
       return (
         <BarChart
-          h='380px'
+          h='500px'
           w='100%'
           dataKey='language'
           type='stacked'
@@ -35,7 +35,7 @@ export const RenderGraph = ({ currentChart, data }: Props) => {
           tooltipDataSource='segment'
           size={300}
           w='100%'
-          h='380px'
+          h='500px'
         />
       )
     case 'Table':

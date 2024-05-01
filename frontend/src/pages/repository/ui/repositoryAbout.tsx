@@ -1,10 +1,11 @@
 import { useGetRepoQuery } from '@entities/repository/api'
-import { Anchor, Badge, Box, Group, Stack, Text, Title } from '@mantine/core'
+import { Anchor, Badge, Box, Group, Skeleton, Stack, Text, Title } from '@mantine/core'
 import { formatKbToMb, getURLHostname } from '@shared/lib/formatters'
 import { useGetFullnameFromURL } from '@shared/lib/git'
 import { IoLogoGithub } from 'react-icons/io5'
 import { TbEye, TbGitFork, TbLink, TbStar } from 'react-icons/tb'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import styles from './styles.module.css'
 
 export const RepositoryAbout = () => {
   const { owner, repoName, gitUrl } = useGetFullnameFromURL()
@@ -16,15 +17,24 @@ export const RepositoryAbout = () => {
     navigate('/404')
   }
 
+  if (isRepoLoading) {
+    return (
+      <Stack maw='450px'>
+        <Skeleton height='33px' width='350px' />
+        <Skeleton height='20px' width='200px' />
+        <Skeleton mt='lg' height='200px' width='450px' />
+      </Stack>
+    )
+  }
+
   return (
     <Stack maw='450px'>
       <Group align='center'>
         <Group gap='5px' align='center'>
-          <IoLogoGithub size='24px' />
-
-          <Title order={3}>
+          <IoLogoGithub />
+          <Text className={styles.title} size='xl' component={Link} to={repository?.html_url ?? 'https://github.com'}>
             @{repository?.owner.login} / {repository?.name}
-          </Title>
+          </Text>
         </Group>
         <Badge color='gray' variant='light'>
           {formatKbToMb(repository?.size)}

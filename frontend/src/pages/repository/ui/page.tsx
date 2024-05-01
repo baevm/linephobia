@@ -10,9 +10,9 @@ export const RepositoryPage = () => {
 
   return (
     <PageLayout withSearch title={`@${owner}/${repoName}`}>
-      <Flex align={'center'} justify='center' h='100%' w='100%' p='xl'>
+      <Flex align='center' justify='center' h='100%' w='100%' p='xl'>
         <Stack h='100%' w='100%' maw='1300px'>
-          <Group justify='space-between' align='flex-start'>
+          <Group justify='space-between' align='flex-start' gap='xl'>
             <RepositoryAbout />
             <StatsGraphs />
           </Group>

@@ -1,9 +1,7 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Repository, RepositoryContent, RepositoryStats, SearchRepositories } from '../model'
 import { getRepoFullname } from '@shared/lib/git'
-
-const STATS_API = 'http://localhost:8080/v1/'
-const GITHUB_API = 'https://api.github.com'
+import { GITHUB_API, STATS_API } from '@shared/consts'
 
 type RepoFullname = {
   owner: string
@@ -39,7 +37,9 @@ export const RepositoryApi = createApi({
 
     searchRepos: builder.query<SearchRepositories, string>({
       query: (searchQuery) => ({
-        url: `${GITHUB_API}/search/repositories?q=${encodeURIComponent(`${searchQuery} in:name`)}&per_page=10&sort=stars`,
+        url: `${GITHUB_API}/search/repositories?q=${encodeURIComponent(
+          `${searchQuery} in:name`
+        )}&per_page=10&sort=stars`,
       }),
     }),
   }),

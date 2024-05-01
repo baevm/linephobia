@@ -13,15 +13,23 @@ export const StatsGraphs = () => {
 
   const formattedName = `@${owner}/${repoName}`
 
-  const { data: stats, isLoading: isStatsLoading } = useGetStatsQuery(gitUrl!, {
+  const {
+    data: stats,
+    isLoading: isStatsLoading,
+    isError,
+  } = useGetStatsQuery(gitUrl!, {
     pollingInterval: refetchTimeout,
   })
+  console.log({ isError, isStatsLoading })
 
   useEffect(() => {
     if (stats && stats.status === 'complete') {
       setRefetchTimeout(0)
     }
-  }, [stats])
+    if (!isStatsLoading && isError) {
+      setRefetchTimeout(0)
+    }
+  }, [stats, isStatsLoading, isError])
 
   if (stats && stats.status === 'pending') {
     return (
@@ -29,7 +37,7 @@ export const StatsGraphs = () => {
         align='center'
         justify='center'
         w='500px'
-        h='500px'
+        h='570px'
         gap='10px'
         p='md'
         style={{ border: '1px solid var(--mantine-color-default-border)', borderRadius: 'var(--mantine-radius-md)' }}>
@@ -47,7 +55,7 @@ export const StatsGraphs = () => {
         align='center'
         justify='center'
         w='500px'
-        h='500px'
+        h='570px'
         gap='10px'
         p='md'
         style={{ border: '1px solid var(--mantine-color-default-border)', borderRadius: 'var(--mantine-radius-md)' }}>
@@ -61,14 +69,22 @@ export const StatsGraphs = () => {
 
   if (stats && stats.status === 'error') {
     return (
-      <Stack align='center' justify='center' w='500px' h='500px' gap='10px'>
+      <Stack align='center' justify='center' w='500px' h='570px' gap='10px'>
+        <Text>Failed to process repository {formattedName}.</Text>
+      </Stack>
+    )
+  }
+
+  if (!isStatsLoading && isError) {
+    return (
+      <Stack align='center' justify='center' w='500px' h='570px' gap='10px'>
         <Text>Failed to process repository {formattedName}.</Text>
       </Stack>
     )
   }
 
   return (
-    <Stack w='500px' h='500px' gap='10px'>
+    <Stack w='500px' h='570px' gap='10px'>
       <RenderGraph currentChart={currentChart} data={stats} />
       <SegmentedControl
         data={[

@@ -1,0 +1,8 @@
+.title {
+  font-weight: 600;
+}
+
+.title:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
