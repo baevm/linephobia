@@ -1,7 +1,5 @@
 # linephobia/backend
 
-
-
 1. create .env file at ./config with structure:
 ```
 # POSTGRES CONFIG
@@ -19,12 +17,17 @@ REDIS_HOST=
 REDIS_PORT=
 ```
 
-2. migrate db
+2. run db locally
+```
+make compose/local
+```
+
+3. migrate db
 ```
 make db/migrate
 ```
 
-3. start up
+4. start up
 ```
 make run
 ```

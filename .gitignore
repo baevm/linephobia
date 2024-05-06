@@ -2,5 +2,5 @@ tmp
 *.env
 node_modules/
 #bin
-*.cert
+*.crt
 *.key
