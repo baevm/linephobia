@@ -38,12 +38,12 @@ compose/local:
 ## compose: runs production docker compose
 .PHONY: compose/prod
 compose/prod:
-	docker compose -f ../deploy/prod.docker-compose.yml --env-file ./config/.env up
+	docker compose -f ../deploy/prod.docker-compose.yml --env-file ./config/.env up --force-recreate
 
 ## docker/build: builds docker image
-# .PHONY: docker/build
-# docker/build:
-# 	docker build --no-cache -t loc-api -f ./Dockerfile .
+.PHONY: docker/build
+docker/build:
+	docker build --no-cache -t loc-api -f ./backend.Dockerfile .
 
 
 

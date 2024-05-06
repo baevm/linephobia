@@ -6,6 +6,7 @@ import { RenderGraph } from './RenderGraph'
 import { Charts } from '../model'
 
 // TODO: при больщом количестве языков они не отображаются в легенде на графах
+// добавить общее число строк во всем репозитории
 export const StatsGraphs = () => {
   const [refetchTimeout, setRefetchTimeout] = useState(3000)
   const [currentChart, setCurrentChart] = useState<Charts>('Bar')
@@ -20,16 +21,18 @@ export const StatsGraphs = () => {
   } = useGetStatsQuery(gitUrl!, {
     pollingInterval: refetchTimeout,
   })
-  console.log({ isError, isStatsLoading })
+
+  // console.log({ refetchTimeout, isError, isStatsLoading })
 
   useEffect(() => {
     if (stats && stats.status === 'complete') {
       setRefetchTimeout(0)
-    }
-    if (!isStatsLoading && isError) {
+    } else if (!isStatsLoading && isError) {
       setRefetchTimeout(0)
+    } else {
+      setRefetchTimeout(3000)
     }
-  }, [stats, isStatsLoading, isError])
+  }, [stats, isStatsLoading, isError, setRefetchTimeout])
 
   if (stats && stats.status === 'pending') {
     return (

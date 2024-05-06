@@ -20,6 +20,15 @@ services:
     environment:
       - REDIS_ADDR=queue:6379
 
+  api:
+    container_name: loc-api
+    build:
+      context: ../backend/
+      dockerfile: ./backend.Dockerfile
+    ports:
+      - ${API_PORT}:${API_PORT}
+    networks:
+      - local
 
 networks:
   local:
