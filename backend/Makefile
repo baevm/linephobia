@@ -18,7 +18,7 @@ run:
 .PHONY: build/api
 build/api:
 	@echo 'Building cmd/api'
-	GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin/api ./cmd/api
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags='-s' -o=./bin/api ./cmd/api
 
 ## test: runs tests
 .PHONY: test
