@@ -9,7 +9,6 @@ import (
 	"linephobia/backend/internal/queue"
 	counterSvc "linephobia/backend/internal/services/counter"
 	"log"
-	"net/http"
 	"os/signal"
 	"syscall"
 
@@ -83,12 +82,8 @@ func main() {
 	/* HTTP ROUTING */
 	e.GET("/v1/repo", ch.GetRepo)
 
-	s := http.Server{
-		Addr:    fmt.Sprintf("%s:%s", config.Data.API_HOST, config.Data.API_PORT),
-		Handler: e,
-	}
-
-	if err := s.ListenAndServeTLS("./certs/cert.crt", "./certs/cert.key"); err != nil {
-		e.Logger.Fatal(err)
-	}
+	// TODO: change to http server
+	e.Logger.Fatal(
+		e.StartTLS(fmt.Sprintf("%s:%s", config.Data.API_HOST, config.Data.API_PORT), "./certs/cert.crt", "./certs/cert.key"),
+	)
 }
