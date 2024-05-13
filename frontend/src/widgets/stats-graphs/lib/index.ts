@@ -1,7 +1,7 @@
 import { RepositoryStats } from '@entities/repository/model'
-import { DonutChartCell } from '@mantine/charts'
+import { DonutChartCell, PieChartCell } from '@mantine/charts'
 
-export const getPieData = (data?: RepositoryStats): DonutChartCell[] => {
+export const getDonutData = (data?: RepositoryStats): DonutChartCell[] => {
   return (
     data?.stats.languages.map((lang) => ({
       name: lang.name,
@@ -22,7 +22,7 @@ export const getBarData = (data?: RepositoryStats): Record<string, any>[] => {
   )
 }
 
-const LANGUAGE_COLORS: Record<string, string | null> = {
+export const LANGUAGE_COLORS: Record<string, string | null> = {
   '1C Enterprise': '#814CCC',
   '2-Dimensional Array': '#38761D',
   '4D': '#004289',

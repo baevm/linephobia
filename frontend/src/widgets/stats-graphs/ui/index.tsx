@@ -22,15 +22,13 @@ export const StatsGraphs = () => {
     pollingInterval: refetchTimeout,
   })
 
-  // console.log({ refetchTimeout, isError, isStatsLoading })
-
   useEffect(() => {
     if (stats && stats.status === 'complete') {
       setRefetchTimeout(0)
     } else if (!isStatsLoading && isError) {
       setRefetchTimeout(0)
     } else {
-      setRefetchTimeout(3000)
+      setRefetchTimeout(3000) // ????
     }
   }, [stats, isStatsLoading, isError, setRefetchTimeout])
 
@@ -93,7 +91,7 @@ export const StatsGraphs = () => {
         data={[
           { label: 'Bar', value: 'Bar' },
           { label: 'Pie', value: 'Pie' },
-          { label: 'Table', value: 'Table', disabled: true },
+          { label: 'Table', value: 'Table' },
         ]}
         value={currentChart}
         onChange={(v) => setCurrentChart(v as Charts)}
