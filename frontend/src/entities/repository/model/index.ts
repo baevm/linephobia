@@ -57,6 +57,12 @@ export type SearchRepositories = {
   items: Repository[]
 }
 
+export type CommitsPerWeek = {
+  days: number[]
+  total: number
+  week: number
+}
+
 export type Repository = {
   id: number
   node_id: string

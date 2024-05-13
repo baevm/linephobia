@@ -1,0 +1,1 @@
+export { RepositoryAbout } from './repositoryAbout'

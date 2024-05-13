@@ -1,5 +1,5 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Repository, RepositoryContent, RepositoryStats, SearchRepositories } from '../model'
+import { CommitsPerWeek, Repository, RepositoryContent, RepositoryStats, SearchRepositories } from '../model'
 import { getRepoFullname } from '@shared/lib/git'
 import { GITHUB_API, STATS_API } from '@shared/consts'
 
@@ -42,6 +42,12 @@ export const RepositoryApi = createApi({
         )}&per_page=10&sort=stars`,
       }),
     }),
+
+    getYearlyCommits: builder.query<CommitsPerWeek[], RepoFullname>({
+      query: ({ owner, name }) => ({
+        url: `${GITHUB_API}/repos/${owner}/${name}/stats/commit_activity`,
+      }),
+    }),
   }),
 })
 
@@ -52,4 +58,5 @@ export const {
   useGetRepoQuery,
   useSearchReposQuery,
   useLazySearchReposQuery,
+  useGetYearlyCommitsQuery,
 } = RepositoryApi

@@ -102,7 +102,7 @@ const TotalTable = ({ data }: { data?: RepositoryStats }) => {
   }, [data])
 
   return (
-    <Table.ScrollContainer minWidth={300} mah={'500px'}>
+    <Table.ScrollContainer minWidth={300} mih='500px' mah={'500px'}>
       <Table withColumnBorders>
         <Table.Thead>{ths}</Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>

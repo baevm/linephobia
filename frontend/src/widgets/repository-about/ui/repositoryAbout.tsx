@@ -1,17 +1,27 @@
-import { useGetRepoQuery } from '@entities/repository/api'
-import { Anchor, Badge, Box, Group, Skeleton, Stack, Text, Title } from '@mantine/core'
+import { useGetRepoQuery, useGetYearlyCommitsQuery } from '@entities/repository/api'
+import { Anchor, Badge, Box, Group, Skeleton, Stack, Text, Title, Tooltip, useMantineColorScheme } from '@mantine/core'
 import { formatKbToMb, getURLHostname } from '@shared/lib/formatters'
 import { useGetFullnameFromURL } from '@shared/lib/git'
+import ActivityCalendar, { ThemeInput } from 'react-activity-calendar'
 import { IoLogoGithub } from 'react-icons/io5'
 import { TbEye, TbGitFork, TbLink, TbStar } from 'react-icons/tb'
 import { Link, useNavigate } from 'react-router-dom'
+import { formatData } from '../lib'
 import styles from './styles.module.css'
 
+const calendarTheme: ThemeInput = {
+  light: ['#f0f0f0', '#b2f2bb', '#69db7c', '#40c057', '#37b24d', '#2b8a3e'],
+  dark: ['#424242', '#b2f2bb', '#69db7c', '#40c057', '#37b24d', '#2b8a3e'],
+}
+
 export const RepositoryAbout = () => {
-  const { owner, repoName, gitUrl } = useGetFullnameFromURL()
+  const { owner, repoName } = useGetFullnameFromURL()
+  const { colorScheme } = useMantineColorScheme()
   const { data: repository, isLoading: isRepoLoading, error: repoError } = useGetRepoQuery({ owner, name: repoName })
+  const { data: commits, isLoading: isCommitsLoading } = useGetYearlyCommitsQuery({ owner, name: repoName })
 
   const navigate = useNavigate()
+  const schemeForCalendar = colorScheme === 'light' ? 'light' : 'dark'
 
   if (repoError) {
     navigate('/404')
@@ -28,7 +38,7 @@ export const RepositoryAbout = () => {
   }
 
   return (
-    <Stack maw='450px'>
+    <Stack maw='640px'>
       <Group align='center'>
         <Group gap='5px' align='center'>
           <IoLogoGithub />
@@ -81,6 +91,25 @@ export const RepositoryAbout = () => {
           <Badge key={topic}>{topic}</Badge>
         ))}
       </Group>
+      {commits && commits?.length > 0 && (
+        <Stack mt='lg'>
+          <Title order={4}>Commits</Title>
+          <ActivityCalendar
+            blockMargin={1}
+            blockSize={10}
+            maxLevel={5}
+            data={formatData(commits)}
+            theme={calendarTheme}
+            hideTotalCount={true}
+            colorScheme={schemeForCalendar}
+            showWeekdayLabels
+            loading={isCommitsLoading}
+            renderBlock={(block, activity) => (
+              <Tooltip label={`${activity.count} commits on ${activity.date}`}>{block}</Tooltip>
+            )}
+          />
+        </Stack>
+      )}
     </Stack>
   )
 }

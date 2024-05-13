@@ -43,7 +43,7 @@ export const SearchInput = ({ size }: SearchInputProps) => {
     try {
       await triggerSearch(query, true).unwrap()
     } catch (error) {
-      console.log({ error })
+      console.error({ error })
     }
   }, 1000)
 
@@ -74,6 +74,7 @@ export const SearchInput = ({ size }: SearchInputProps) => {
   }
 
   const onOptionSubmit = (html_url: string) => {
+    combobox.closeDropdown()
     addToHistory({ html_url: html_url })
     navigate({ pathname: '/repository', search: `?git_url=${html_url}` })
   }
