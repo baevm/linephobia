@@ -1,1 +1,1 @@
-export { SearchTabs } from './ui'
+export { SearchTabs } from './ui/searchTabs'

@@ -1,5 +1,5 @@
 import { FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { CommitsPerWeek, Repository, RepositoryContent, RepositoryStats, SearchRepositories } from '../model'
+import { CommitsPerWeek, GithubRepository, RepositoryContent, RepositoryStats, SearchRepositories } from '../model'
 import { getRepoFullname } from '@shared/lib/git'
 import { GITHUB_API, STATS_API } from '@shared/consts'
 
@@ -9,6 +9,7 @@ type RepoFullname = {
 }
 
 export const RepositoryApi = createApi({
+  reducerPath: 'repository',
   baseQuery: fetchBaseQuery({ baseUrl: STATS_API }),
   endpoints: (builder) => ({
     getStats: builder.query<RepositoryStats, string>({
@@ -31,7 +32,7 @@ export const RepositoryApi = createApi({
       },
     }),
 
-    getRepo: builder.query<Repository, RepoFullname>({
+    getRepo: builder.query<GithubRepository, RepoFullname>({
       query: ({ owner, name }) => ({ url: `${GITHUB_API}/repos/${owner}/${name}` }),
     }),
 

@@ -26,6 +26,7 @@ type TaskStatus = 'pending' | 'processing' | 'complete' | 'error'
 export type RepositoryStats = {
   id: number
   url: string
+  site: string
   owner: string
   name: string
   created_at: string
@@ -54,7 +55,7 @@ export type RepositoryContent = {
 
 export type SearchRepositories = {
   total_count: number
-  items: Repository[]
+  items: GithubRepository[]
 }
 
 export type CommitsPerWeek = {
@@ -63,7 +64,7 @@ export type CommitsPerWeek = {
   week: number
 }
 
-export type Repository = {
+export type GithubRepository = {
   id: number
   node_id: string
   name: string
