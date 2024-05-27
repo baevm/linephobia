@@ -6,8 +6,10 @@ import (
 	"linephobia/backend/config"
 	"linephobia/backend/internal/db"
 	counterH "linephobia/backend/internal/handlers/counter"
+	globalStatsH "linephobia/backend/internal/handlers/globalstats"
 	"linephobia/backend/internal/queue"
 	counterSvc "linephobia/backend/internal/services/counter"
+	globalStatsSvc "linephobia/backend/internal/services/globalstats"
 	"log"
 	"os/signal"
 	"syscall"
@@ -53,7 +55,10 @@ func main() {
 
 	/* CONSTRUCTORS */
 	cs := counterSvc.NewService(q, repo)
-	ch := counterH.NewHandler(cs)
+	gss := globalStatsSvc.NewService(repo)
+
+	ch := counterH.NewHandler(cs, gss)
+	gsh := globalStatsH.NewHandler(gss)
 
 	/* QUEUE ROUTING */
 	qMux.HandleFunc(queue.TypeLOCProcess, cs.HandleLOCProcessTask)
@@ -62,7 +67,6 @@ func main() {
 		if err := queueServer.Run(qMux); err != nil {
 			log.Fatalln(err)
 		}
-
 	}()
 
 	/* GRACEFUL SHUTDOWN */
@@ -81,6 +85,7 @@ func main() {
 
 	/* HTTP ROUTING */
 	e.GET("/v1/repo", ch.GetRepo)
+	e.GET("/v1/global-stats", gsh.GetGlobalStats)
 
 	// TODO: change to http server
 	e.Logger.Fatal(

@@ -2,17 +2,23 @@ package counter
 
 import (
 	"linephobia/backend/internal/services/counter"
+	"linephobia/backend/internal/services/globalstats"
 
 	"github.com/hibiken/asynq"
 )
 
 type CounterHandler struct {
-	counterService *counter.CounterService
+	counterService     *counter.CounterService
+	globalStatsService *globalstats.GlobalStatsService
 }
 
-func NewHandler(counterService *counter.CounterService) *CounterHandler {
+func NewHandler(
+	counterService *counter.CounterService,
+	globalStatsService *globalstats.GlobalStatsService,
+) *CounterHandler {
 	return &CounterHandler{
-		counterService: counterService,
+		counterService:     counterService,
+		globalStatsService: globalStatsService,
 	}
 }
 

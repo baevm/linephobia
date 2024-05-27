@@ -9,12 +9,18 @@ import (
 	models "linephobia/backend/internal/models"
 )
 
+type Popular struct {
+	ID          int64              `json:"id"`
+	SearchCount pgtype.Int4        `json:"search_count"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
 type Repostat struct {
-	ID        pgtype.Int8
-	Url       string
-	Site      string
-	Owner     string
-	Name      string
-	CreatedAt pgtype.Timestamptz
-	Stats     models.LanguageSummary
+	ID        pgtype.Int8            `json:"id"`
+	Url       string                 `json:"url"`
+	Site      string                 `json:"site"`
+	Owner     string                 `json:"owner"`
+	Name      string                 `json:"name"`
+	CreatedAt pgtype.Timestamptz     `json:"created_at"`
+	Stats     models.LanguageSummary `json:"stats"`
 }

@@ -17,17 +17,23 @@ REDIS_HOST=
 REDIS_PORT=
 ```
 
-2. run db locally
+2. Create certs folder with SSL certs
+```
+./certs/cert.key
+./certs/cert.crt
+```
+
+3. run db locally
 ```
 make compose/local
 ```
 
-3. migrate db
+1. migrate db
 ```
 make db/migrate
 ```
 
-4. start up
+1. start up
 ```
 make run
 ```

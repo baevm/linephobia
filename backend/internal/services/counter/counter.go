@@ -145,9 +145,14 @@ func (cs *CounterService) HandleLOCProcessTask(ctx context.Context, t *asynq.Tas
 	})
 
 	if err != nil {
-		log.Printf("failed to save repo in db: task_id=%s, git_Url=%s, error: %s\n", "todo", p.GitUrl, err.Error())
+		log.Printf("failed to save repo in db: git_Url=%s, error: %s\n", p.GitUrl, err.Error())
 	} else {
-		log.Printf("saved repo in db: task_id=%s, git_Url=%s, created_at: %s\n", "todo", p.GitUrl, res.CreatedAt.Time.Local().String())
+		log.Printf("saved repo in db: git_Url=%s, created_at: %s\n", p.GitUrl, res.CreatedAt.Time.Local().String())
+		_, err = cs.db.CreatePopularItem(context.Background(), res.ID.Int64)
+
+		if err != nil {
+			log.Printf("failed to create popularItem in db: git_Url=%s, created_at: %s\n", p.GitUrl, res.CreatedAt.Time.Local().String())
+		}
 	}
 
 	return nil

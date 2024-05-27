@@ -1,10 +1,12 @@
 package counter
 
 import (
+	"context"
 	"errors"
 	"linephobia/backend/internal/handlers"
 	"linephobia/backend/internal/models"
 	"linephobia/backend/internal/services/counter"
+	"log"
 	"net/http"
 
 	"github.com/jackc/pgx/v5/pgtype"
@@ -32,7 +34,6 @@ func (ch *CounterHandler) GetRepo(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, handlers.ErrResponse{
 			Error: "bad request",
 		})
-
 	}
 
 	// check if repo exists
@@ -47,6 +48,7 @@ func (ch *CounterHandler) GetRepo(c echo.Context) error {
 			if err != nil {
 				// if task not found queue task for processing
 				if errors.Is(err, counter.ErrTaskNotFound) {
+					// enqueue new task
 					_, err := ch.counterService.EnqueueLOCTask(req.GitUrl)
 
 					if err != nil {
@@ -65,6 +67,7 @@ func (ch *CounterHandler) GetRepo(c echo.Context) error {
 				})
 			}
 
+			// if task for this repo already exist, return its status
 			if taskInfo != nil {
 				taskStatus := string(getStatus(taskInfo.State))
 
@@ -78,6 +81,12 @@ func (ch *CounterHandler) GetRepo(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, handlers.ErrResponse{
 			Error: err.Error(),
 		})
+	}
+
+	err = ch.globalStatsService.UpdatePopular(context.Background(), repoStats.ID.Int64)
+
+	if err != nil {
+		log.Println(err)
 	}
 
 	return c.JSON(http.StatusOK, RepoResponse{

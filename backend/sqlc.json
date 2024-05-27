@@ -11,6 +11,7 @@
           "out": "internal/db",
           "sql_package": "pgx/v5",
           "emit_result_struct_pointers": true,
+          "emit_json_tags":true,
           "overrides": [
             {
               "column": "repostats.stats",

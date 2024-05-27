@@ -12,6 +12,107 @@ import (
 	models "linephobia/backend/internal/models"
 )
 
+const createPopularItem = `-- name: CreatePopularItem :one
+INSERT INTO "popular" (ID)
+VALUES ($1)
+RETURNING id, search_count, created_at
+`
+
+func (q *Queries) CreatePopularItem(ctx context.Context, id int64) (*Popular, error) {
+	row := q.db.QueryRow(ctx, createPopularItem, id)
+	var i Popular
+	err := row.Scan(&i.ID, &i.SearchCount, &i.CreatedAt)
+	return &i, err
+}
+
+const getPopular = `-- name: GetPopular :many
+SELECT r.id, r.owner, r.name, r.site, r.url, p.search_count
+FROM "popular" as p
+LEFT JOIN "repostats" as r
+ON p.id = r.id
+ORDER BY search_count DESC
+LIMIT 10
+`
+
+type GetPopularRow struct {
+	ID          pgtype.Int8 `json:"id"`
+	Owner       pgtype.Text `json:"owner"`
+	Name        pgtype.Text `json:"name"`
+	Site        pgtype.Text `json:"site"`
+	Url         pgtype.Text `json:"url"`
+	SearchCount pgtype.Int4 `json:"search_count"`
+}
+
+func (q *Queries) GetPopular(ctx context.Context) ([]*GetPopularRow, error) {
+	rows, err := q.db.Query(ctx, getPopular)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetPopularRow
+	for rows.Next() {
+		var i GetPopularRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Owner,
+			&i.Name,
+			&i.Site,
+			&i.Url,
+			&i.SearchCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRecent = `-- name: GetRecent :many
+SELECT id, owner, name, site, url, created_at
+FROM "repostats"
+ORDER BY created_at DESC
+LIMIT 10
+`
+
+type GetRecentRow struct {
+	ID        pgtype.Int8        `json:"id"`
+	Owner     string             `json:"owner"`
+	Name      string             `json:"name"`
+	Site      string             `json:"site"`
+	Url       string             `json:"url"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) GetRecent(ctx context.Context) ([]*GetRecentRow, error) {
+	rows, err := q.db.Query(ctx, getRecent)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetRecentRow
+	for rows.Next() {
+		var i GetRecentRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Owner,
+			&i.Name,
+			&i.Site,
+			&i.Url,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRepo = `-- name: GetRepo :one
 SELECT id, url, site, owner, name, created_at, stats FROM "repostats"
 WHERE site=$1 and owner = $2 and name = $3
@@ -19,9 +120,9 @@ LIMIT 1
 `
 
 type GetRepoParams struct {
-	Site  string
-	Owner string
-	Name  string
+	Site  string `json:"site"`
+	Owner string `json:"owner"`
+	Name  string `json:"name"`
 }
 
 func (q *Queries) GetRepo(ctx context.Context, arg GetRepoParams) (*Repostat, error) {
@@ -51,16 +152,16 @@ RETURNING id, created_at
 `
 
 type SaveRepoParams struct {
-	Url   string
-	Site  string
-	Owner string
-	Name  string
-	Stats models.LanguageSummary
+	Url   string                 `json:"url"`
+	Site  string                 `json:"site"`
+	Owner string                 `json:"owner"`
+	Name  string                 `json:"name"`
+	Stats models.LanguageSummary `json:"stats"`
 }
 
 type SaveRepoRow struct {
-	ID        pgtype.Int8
-	CreatedAt pgtype.Timestamptz
+	ID        pgtype.Int8        `json:"id"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
 func (q *Queries) SaveRepo(ctx context.Context, arg SaveRepoParams) (*SaveRepoRow, error) {
@@ -74,4 +175,15 @@ func (q *Queries) SaveRepo(ctx context.Context, arg SaveRepoParams) (*SaveRepoRo
 	var i SaveRepoRow
 	err := row.Scan(&i.ID, &i.CreatedAt)
 	return &i, err
+}
+
+const updatePopular = `-- name: UpdatePopular :exec
+UPDATE "popular"
+SET search_count = COALESCE(search_count, 0) + 1
+WHERE id=$1
+`
+
+func (q *Queries) UpdatePopular(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, updatePopular, id)
+	return err
 }
