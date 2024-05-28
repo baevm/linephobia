@@ -60,10 +60,10 @@ export const StatsGraphs = () => {
         gap='10px'
         p='md'
         style={{ border: '1px solid var(--mantine-color-default-border)', borderRadius: 'var(--mantine-radius-md)' }}>
-        <Text>
+        <Text ta='center' c='dimmed'>
           Task for repository <Anchor href={gitUrl}>{formattedName}</Anchor> is processing...
         </Text>
-        <Loader />
+        <Loader type='dots' />
       </Stack>
     )
   }
@@ -71,7 +71,9 @@ export const StatsGraphs = () => {
   if (stats && stats.status === 'error') {
     return (
       <Stack align='center' justify='center' w='500px' h='570px' gap='10px'>
-        <Text>Failed to process repository {formattedName}.</Text>
+        <Text ta='center' c='red'>
+          Failed to process repository {formattedName}.
+        </Text>
       </Stack>
     )
   }
